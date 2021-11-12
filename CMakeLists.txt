@@ -22,7 +22,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STR
 
   # using Clang (linux or apple) or GCC
   message("Using clang/gcc compiler flags")
-  SET(BASE_CXX_FLAGS "-std=c++11 -Wall -Wextra -Werror -g3 -fPIC -fopenmp")
+#  SET(BASE_CXX_FLAGS "-std=c++11 -Wall -Wextra -Werror -g3 -fPIC -fopenmp")
+  SET(BASE_CXX_FLAGS "-std=c++11 -Wall -Wextra -Werror -g3 -fPIC")
   SET(DISABLED_WARNINGS " -Wno-unused-parameter -Wno-return-std-move -Wno-deprecated-copy -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -Wno-missing-braces -Wno-unused-private-field")
   SET(TRACE_INCLUDES " -H -Wno-error=unused-command-line-argument")
 
@@ -107,6 +108,11 @@ target_include_directories(rcurves PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 target_include_directories(rcurves PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/libgmultigrid/include/")
 target_link_libraries(rcurves geometry-central polyscope)
 target_compile_options(rcurves PUBLIC -fvisibility=hidden)
+# OpenMP
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+  target_link_libraries(rcurves OpenMP::OpenMP_CXX)
+endif()
 
 add_executable(rcurves_app src/lws_app.cpp)
 target_link_libraries(rcurves_app rcurves)
